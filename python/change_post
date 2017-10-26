@@ -1,0 +1,136 @@
+# -*- coding: UTF-8 -*-
+import os
+import shutil
+
+#把简书的文章加 head 修改 文件名 保持到 savefolder
+
+basepath = "/Users/shaomiao/Desktop/user-2590671-1508561008"
+date = "2017-10-17-"
+suffix = ".markdown"
+
+
+def eachFile(filepath):
+    pathDir = os.listdir(filepath)
+    for allDir in pathDir:
+        print allDir
+
+# get path all file
+# path is destination folder path
+# list_name is return full path list
+def listdir(path,list_name):
+    for file in os.listdir(path):
+        # mosaic path
+        file_path = os.path.join(path,file)
+        if os.path.isdir(file_path):
+            listdir(file_path,list_name)
+        else:
+            list_name.append(file_path)
+
+# add str
+# list_name is full path
+def addstr(list_name):
+    for file_name in list_name:
+        f = open(file_name)
+        MyRomStr = f.read()
+        f.close()
+        title = f.name[f.name.rfind("/")+1:f.name.rfind(".")]
+        tag = f.name[f.name.rfind("/",0,f.name.rfind("/"))+1:f.name.rfind("/")]
+        image = "img/tag-bg.jpg"
+        if(tag == 'python'):
+            image = "img/post-bg-rwd.jpg"
+        elif(tag == '随笔'):
+            image = "img/post-bg-os-metro.jpg"
+        elif(tag == '逆向'):
+            image = "img/post-bg-universe.jpg"
+        elif(tag == '算法'):
+            image = "img/post-bg-os-metro.jpg"
+        elif(tag == '树莓派'):
+            image = "img/post-bg-alitrip.jpg"
+        elif (tag == '日记本'):
+            image = "img/home-bg-art.jpg"
+        elif (tag == '安卓代码段'):
+            image = "img/post-bg-nextgen-web-pwa.jpg"
+        elif (tag == '各种'):
+            image = "img/home-bg-art.jpg"
+        elif(tag == "博客系统"):
+            image = "img/post-bg-e2e-ux.jpg"
+        elif (tag == "ubuntu"):
+            image = "img/post-bg-unix-linux.jpg"
+        elif (tag == "Kotlin"):
+            image="img/post-bg-digital-native.jpg"
+        elif (tag == "java"):
+            image = "img/home-bg-art.jpg"
+        elif (tag == "js"):
+            image = "img/post-bg-js-version.jpg"
+        elif (tag == "git"):
+            image = "img/post-bg-alitrip.jpg"
+        elif (tag == "android的笔记"):
+            image = "img/post-bg-android.jpg"
+        elif (tag == "android"):
+            image = "img/post-bg-android.jpg"
+        elif (tag == "日记本"):
+            image = "img/post-bg-alitrip.jpg"
+
+        #print f.name
+        #print f.name.rfind("/")
+        #print f.name.rfind("/",0,f.name.rfind("/"))
+        #print f.name[f.name.rfind("/",0,f.name.rfind("/"))+1:f.name.rfind("/")]
+
+        f = open(file_name, "wb")
+        f.write("---")
+        f.write("\n")
+        f.write("layout:     post")
+        f.write("\n")
+        f.write('title:      "'+title+'"')
+        f.write("\n")
+        f.write('date:       2017-10-21')
+        f.write("\n")
+        f.write('author:     "shaomiao"')
+        f.write("\n")
+        f.write('header-img: "'+image+'"')
+        f.write("\n")
+        f.write('tags:')
+        f.write("\n")
+        f.write('    - "'+tag+'"')
+        f.write("\n")
+        f.write('---')
+        f.write("\n")
+        f.write(MyRomStr)
+        f.close()
+
+# change file name
+# path_list is all file full path
+def changeFileName(path_list):
+    #for index in range(len(path_list)):
+    index = 0
+    for path in path_list:
+        oldname = path[path.rfind("/")+1:path.rfind(".")]
+        newname = date+oldname+suffix
+        newpath = path[0:path.rfind("/")+1]+newname
+        if (oldname.find(date)==-1):
+            os.rename(path, newpath)
+            list_name[index] = newpath
+        index += 1
+
+# copy list_name to savefolder
+def saveallFile(savefolder,list_name):
+    if (not os.path.exists(savefolder)):
+        os.makedirs(savefolder)
+    for name in list_name:
+        newnamepath = savefolder+name[name.rfind("/")+1:len(name)]
+        if (not os.path.isfile(newnamepath)):
+            shutil.copyfile(name,newnamepath )
+
+
+
+
+
+list_name =[]
+# get all file
+listdir(basepath,list_name)
+# add str on head
+addstr(list_name)
+# change file name
+changeFileName(list_name)
+# save all file to once folder
+saveallFile(basepath+"/shaomiao/",list_name)
